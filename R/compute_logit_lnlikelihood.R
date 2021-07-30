@@ -1,3 +1,13 @@
+#' Function that compute the logit log-likelihood function
+#'
+#' @param param_constant a parameter for the constant term
+#' @param param_covariate parameters for covariates
+#' @param y a vector of binary outcomes
+#' @param X a covariate matrix
+#'
+#' @return logit log-likelihood function
+#'
+#' @export
 compute_logit_lnlikelihood <- function (param_constant, param_covariate, y, X) {
   # If length(y) != nrow(X), stop the process.
   if (length(y) != nrow(X)) {
