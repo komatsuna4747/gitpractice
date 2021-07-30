@@ -1,4 +1,9 @@
 compute_logit_lnlikelihood <- function (param_constant, param_covariate, y, X) {
+  # If length(y) != nrow(X), stop the process.
+  if (length(y) != nrow(X)) {
+    stop("\nThe length of the outcome binary vector and the number of rows of the covariate matrix don't match.")
+  }
+
   # Compute exp(xb)
   exp_xb <- exp(param_constant + X %*% param_covariate)
 
