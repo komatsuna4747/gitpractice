@@ -19,3 +19,8 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           root_file: papers/report.tex
+      - name: Upload a pdf document
+        uses: actions/upload-artifact@v2
+        with:
+          name: PDF
+          path: papers/report.pdf
