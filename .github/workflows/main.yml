@@ -19,8 +19,10 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           root_file: papers/report.tex
-      - name: Upload a pdf document
-        uses: actions/upload-artifact@v2
+      - name: Copy PDF file
+        run: mkdir docs && cp papers/*.pdf docs/
+      - name: Deploy pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: PDF
-          path: papers
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
