@@ -10,17 +10,18 @@ on:
     branches: [ main ]
 
 jobs:
-  build_latex:
+  deploy:
+    name: github-pages
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
+    container: arcatdmz/texlive
     steps:
-      - name: Set up Git repository
+      - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@v2
+      - name: Build PDF file
+        run: cd papers && latexmk -pdf && latexmk -c && mkdir -p docs && cp *.pdf ./docs/
+      - name: Deploy pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          root_file: papers/report.tex
-      - name: Upload a pdf document
-        uses: actions/upload-artifact@v2
-        with:
-          name: PDF
-          path: papers
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./papers/docs
