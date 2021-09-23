@@ -1,0 +1,17 @@
+# Source: https://github.com/yuuki/paper-tex-en-boilerplate/blob/main/.devcontainer/docker-compose.yml
+version: "3"
+services:
+  docker-latex:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sleep infinity
+    volumes:
+      - ../:/data
+      - ~/.gitconfig:/root/.gitconfig
+      - ./.latexmkrc:/root/.latexmkrc
+    environment:
+      SHELL: '/bin/bash'
+      TEXINPUTS: './/;'
+      BSTINPUTS: './/;'
+      BIBINPUTS: './/;'
