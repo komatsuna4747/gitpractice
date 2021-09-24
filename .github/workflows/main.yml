@@ -3,11 +3,9 @@ name: Build LaTeX document
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths:
+    - 'papers/report.tex'
 
 jobs:
   build_latex:
@@ -18,9 +16,16 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: papers/report.tex
-      - name: Upload a pdf document
-        uses: actions/upload-artifact@v2
+          working_directory: papers
+          root_file: report.tex
+      - uses: actions/upload-artifact@v2
         with:
           name: PDF
-          path: papers
+          path: papers/report.pdf
+      - name: Copy PDF file
+        run: mkdir docs && cp papers/*.pdf docs/
+      - name: Deploy pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
