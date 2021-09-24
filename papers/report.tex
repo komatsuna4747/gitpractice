@@ -9,7 +9,8 @@
 \usepackage{here}
 \usepackage{url}
 \usepackage{listings}
-\usepackage{natbib}
+\usepackage[natbib=true, style=apa]{biblatex}
+\bibliography{report.bib}
 
 \begin{document}
 
@@ -17,9 +18,8 @@
 
 \section{Introduction}
 
-\cite{knittel2018working} is a good reference for empirical research projects.
+\citet{knittel2018working} is a good reference for empirical research projects.
 
-\bibliography{report}
-\bibliographystyle{aer}
+\printbibliography
 
 \end{document}
