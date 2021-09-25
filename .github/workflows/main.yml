@@ -9,15 +9,15 @@ on:
       - synchronize
       - reopened
     paths:
-      - "papers/**"
-      - "!papes/**.bib"
+      - "papers/report.tex"
+      - "papers/beamer.tex"
   push:
     branches:
       - main
       - develop
     paths:
-      - "papers/**"
-      - "!papes/**.bib"
+      - "papers/report.tex"
+      - "papers/beamer.tex"
 
 jobs:
   precheck:
