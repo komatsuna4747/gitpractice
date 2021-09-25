@@ -3,13 +3,6 @@ name: Build LaTeX document
 
 # Controls when the workflow will run
 on:
-  push:
-    branches:
-      - main
-      - develop
-    paths:
-      - "papers/report.tex"
-      - "papers/beamer.tex"
   pull_request:
     types:
       - opened
