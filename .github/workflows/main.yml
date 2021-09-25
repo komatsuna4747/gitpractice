@@ -4,35 +4,66 @@ name: Build LaTeX document
 # Controls when the workflow will run
 on:
   push:
+    branches:
+      - main
+      - develop
     paths:
-    - "papers/report.tex"
-    - "papers/presentations.tex"
+      - "papers/report.tex"
+      - "papers/presentations.tex"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "papers/report.tex"
+      - "papers/presentations.tex"
 
 jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    outputs:
+      files_changed: ${{ steps.file_changes.outputs.files }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: file_changes
+        uses: trilom/file-changes-action@v1.2.3
+        
   build_latex:
+    needs: precheck
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v2.1
       - name: Compile report.tex
-        if: contains(steps.changed-files.outputs.modified_files, 'papers/report.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
           root_file: report.tex
+      - name: Copy report.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
+        run: mkdir docs && cp papers/report.pdf docs/
+      - name: Deploy report.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages-paper
       - name: Compile presentation.tex
         if: contains(steps.changed-files.outputs.modified_files, 'papers/presentation.tex')
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
           root_file: presentation.tex
-      - name: Copy PDF file
-        run: mkdir docs && cp papers/*.pdf docs/
-      - name: Deploy pages
+      - name: Copy presentation.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/presentation.tex')
+        run: mkdir beamer && cp papers/presentation.pdf beamer/
+      - name: Deploy presentation.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/presentation.tex')
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./beamer
+          publish_branch: gh-pages-beamer
