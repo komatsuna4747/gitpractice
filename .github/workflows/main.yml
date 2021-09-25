@@ -5,7 +5,7 @@ name: Build LaTeX document
 on:
   push:
     paths:
-    - 'papers/report.tex'
+    - 'papers/*.tex'
 
 jobs:
   build_latex:
@@ -17,7 +17,8 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
-          root_file: report.tex
+          root_file: "*.tex"
+          glob_root_file: true
       - name: Copy PDF file
         run: mkdir docs && cp papers/*.pdf docs/
       - name: Deploy pages
