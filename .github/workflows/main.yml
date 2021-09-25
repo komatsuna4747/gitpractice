@@ -52,7 +52,7 @@ jobs:
           publish_dir: ./docs
           publish_branch: gh-pages-paper
       - name: Compile beamer.tex
-        if: contains(steps.changed-files.outputs.modified_files, 'papers/beamer.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
