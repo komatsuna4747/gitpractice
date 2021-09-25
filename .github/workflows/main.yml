@@ -5,7 +5,7 @@ name: Build LaTeX document
 on:
   push:
     paths:
-    - papers/*.tex
+    - "papers/**"
 
 jobs:
   build_latex:
