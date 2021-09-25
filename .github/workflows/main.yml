@@ -9,7 +9,7 @@ on:
       - develop
     paths:
       - "papers/report.tex"
-      - "papers/presentations.tex"
+      - "papers/beamer.tex"
   pull_request:
     types:
       - opened
@@ -17,7 +17,7 @@ on:
       - reopened
     paths:
       - "papers/report.tex"
-      - "papers/presentations.tex"
+      - "papers/beamer.tex"
 
 jobs:
   precheck:
@@ -51,17 +51,17 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
           publish_branch: gh-pages-paper
-      - name: Compile presentation.tex
-        if: contains(steps.changed-files.outputs.modified_files, 'papers/presentation.tex')
+      - name: Compile beamer.tex
+        if: contains(steps.changed-files.outputs.modified_files, 'papers/beamer.tex')
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
-          root_file: presentation.tex
-      - name: Copy presentation.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/presentation.tex')
-        run: mkdir beamer && cp papers/presentation.pdf beamer/
-      - name: Deploy presentation.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/presentation.tex')
+          root_file: beamer.tex
+      - name: Copy beamer.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
+        run: mkdir beamer && cp papers/beamer.pdf beamer/
+      - name: Deploy beamer.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
