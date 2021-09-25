@@ -5,8 +5,8 @@ name: Build LaTeX document
 on:
   push:
     paths:
-    - "papers/**"
-    - "!papers/**.bib"
+    - "papers/report.tex"
+    - "papers/presentations.tex"
 
 jobs:
   build_latex:
@@ -14,12 +14,21 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
-      - name: Compile LaTeX document
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v2.1
+      - name: Compile report.tex
+        if: contains(steps.changed-files.outputs.modified_files, 'papers/report.tex')
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
-          root_file: "*.tex"
-          glob_root_file: true
+          root_file: report.tex
+      - name: Compile presentation.tex
+        if: contains(steps.changed-files.outputs.modified_files, 'papers/presentation.tex')
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: papers
+          root_file: presentation.tex
       - name: Copy PDF file
         run: mkdir docs && cp papers/*.pdf docs/
       - name: Deploy pages
