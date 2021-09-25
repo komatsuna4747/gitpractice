@@ -17,6 +17,10 @@ jobs:
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v2.1
+        with:
+          files: |
+             papers/report.tex
+             papers/presentations.tex
       - name: Compile report.tex
         if: contains(steps.changed-files.outputs.modified_files, 'papers/report.tex')
         uses: xu-cheng/latex-action@v2
