@@ -6,6 +6,7 @@ on:
   push:
     paths:
     - "papers/**"
+    - "!papers/**.bib"
 
 jobs:
   build_latex:
