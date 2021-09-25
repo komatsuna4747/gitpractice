@@ -37,9 +37,20 @@ jobs:
           working_directory: papers
           root_file: presentation.tex
       - name: Copy PDF file
-        run: mkdir docs && cp papers/*.pdf docs/
-      - name: Deploy pages
+        run: |
+          [ -f papers/report.pdf ] && mkdir docs && cp papers/report.pdf docs/
+          [ -f papers/presentation.pdf ] && mkdir beamer && cp papers/presentation.pdf beamer/
+      - name: Deploy report.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
+          publish_branch: gh-pages-paper
+      - name: Deploy presentation.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/presentation.tex')
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./beamer
+          publish_branch: gh-pages-beamer
