@@ -9,15 +9,15 @@ on:
       - synchronize
       - reopened
     paths:
-      - "papers/report.tex"
-      - "papers/beamer.tex"
+      - "papers/**"
+      - "!papes/**.bib"
   push:
     branches:
       - main
       - develop
     paths:
-      - "papers/report.tex"
-      - "papers/beamer.tex"
+      - "papers/**"
+      - "!papes/**.bib"
 
 jobs:
   precheck:
@@ -32,7 +32,12 @@ jobs:
   compile_paper:
     needs: precheck
     runs-on: ubuntu-latest
-    if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
+    if: |
+      contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex') ||
+      (
+       !contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex') && 
+       !contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
+      )
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
@@ -53,7 +58,12 @@ jobs:
   compile_beamer:
     needs: precheck
     runs-on: ubuntu-latest
-    if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
+    if: |
+      contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex') ||
+      (
+       !contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex') && 
+       !contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
+      )
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
