@@ -4,9 +4,20 @@ name: Build LaTeX document
 # Controls when the workflow will run
 on:
   push:
+    branches:
+      - main
+      - develop
     paths:
-    - "papers/report.tex"
-    - "papers/presentations.tex"
+      - "papers/report.tex"
+      - "papers/presentations.tex"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "papers/report.tex"
+      - "papers/presentations.tex"
 
 jobs:
   precheck:
