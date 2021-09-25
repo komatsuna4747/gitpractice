@@ -30,16 +30,9 @@ jobs:
         with:
           working_directory: papers
           root_file: report.tex
-      - name: Compile presentation.tex
-        if: contains(steps.changed-files.outputs.modified_files, 'papers/presentation.tex')
-        uses: xu-cheng/latex-action@v2
-        with:
-          working_directory: papers
-          root_file: presentation.tex
-      - name: Copy PDF file
-        run: |
-          [ -f papers/report.pdf ] && mkdir docs && cp papers/report.pdf docs/
-          [ -f papers/presentation.pdf ] && mkdir beamer && cp papers/presentation.pdf beamer/
+      - name: Copy report.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
+        run: mkdir docs && cp papers/report.pdf docs/
       - name: Deploy report.pdf
         if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
         uses: peaceiris/actions-gh-pages@v3
@@ -47,6 +40,15 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
           publish_branch: gh-pages-paper
+      - name: Compile presentation.tex
+        if: contains(steps.changed-files.outputs.modified_files, 'papers/presentation.tex')
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: papers
+          root_file: presentation.tex
+      - name: Copy presentation.pdf
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/presentation.tex')
+        run: mkdir beamer && cp papers/presentation.pdf beamer/
       - name: Deploy presentation.pdf
         if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/presentation.tex')
         uses: peaceiris/actions-gh-pages@v3
