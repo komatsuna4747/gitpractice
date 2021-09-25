@@ -29,32 +29,32 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v2
       - name: Compile report.tex
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex') == false
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
           root_file: report.tex
       - name: Copy report.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex') == false
         run: mkdir docs && cp papers/report.pdf docs/
       - name: Deploy report.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex') == false
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
           publish_branch: gh-pages-paper
       - name: Compile beamer.tex
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex') == false
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
           root_file: beamer.tex
       - name: Copy beamer.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex') == false
         run: mkdir beamer && cp papers/beamer.pdf beamer/
       - name: Deploy beamer.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex') == false
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
