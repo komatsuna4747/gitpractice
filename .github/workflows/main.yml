@@ -29,39 +29,42 @@ jobs:
       - id: file_changes
         uses: trilom/file-changes-action@v1.2.3
         
-  build_latex:
+  compile_paper:
     needs: precheck
     runs-on: ubuntu-latest
+    if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
       - name: Compile report.tex
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
           root_file: report.tex
       - name: Copy report.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
         run: mkdir docs && cp papers/report.pdf docs/
       - name: Deploy report.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
           publish_branch: gh-pages-paper
+          
+  compile_beamer:
+    needs: precheck
+    runs-on: ubuntu-latest
+    if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
       - name: Compile beamer.tex
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
           root_file: beamer.tex
       - name: Copy beamer.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
         run: mkdir beamer && cp papers/beamer.pdf beamer/
       - name: Deploy beamer.pdf
-        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/beamer.tex')
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
