@@ -9,20 +9,23 @@ on:
     - "papers/presentations.tex"
 
 jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    outputs:
+      files_changed: ${{ steps.file_changes.outputs.files }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: file_changes
+        uses: trilom/file-changes-action@v1.2.3
+        
   build_latex:
+    needs: precheck
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v2.1
-        with:
-          files: |
-             papers/report.tex
-             papers/presentations.tex
       - name: Compile report.tex
-        if: contains(steps.changed-files.outputs.modified_files, 'papers/report.tex')
+        if: contains(fromJson(needs.precheck.outputs.files_changed), 'papers/report.tex')
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: papers
